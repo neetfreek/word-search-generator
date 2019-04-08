@@ -15,6 +15,7 @@ Find the `WordSearch.exe` executable file in `WordSearch/bin/Debug` or `WordSear
 
 **TODO:**
 - Clean up code in `WordSearch.cs`
+- Move all console functionality from /Common to FrontEnd.cs
 - Add functionality for diagonal words
 - Add functionality for taking words from external data files
 - Add input-based selection of different word lists
