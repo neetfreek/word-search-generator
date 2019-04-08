@@ -1,39 +1,52 @@
 ﻿using System;
 
+/*======================================*
+*  Word list, grid setup functionality  *
+*=======================================*/
+
 namespace WordSearch
 {
-    public static class WordSearch
+    public class WordSearch
     {
-        public static void StartWordSearch()
-        {
+        public string[] words;
+        public char[,] grid;
 
-            Setup();
+        /*==============================================================================*
+        *  Handle creation of words to find, grid, call front-end to display to user    *
+        *===============================================================================*/
+        public void SetupWordSearch()
+        {
+            SetupWords();
+            SetupGrid();
         }
 
-        // SETUP METHODS
-        private static void Setup()
+        /*==================================================*
+        *  Word list (vector/1D array) setup functionality  *
+        *===================================================*/
+        private string[] SetupWords()
         {
-            string[] words = CreateVectorWords();
-            FrontEnd.PrintWords(words);
-
-            int numCharsInWords = Vectors.CountLettersVector(words);
-            int lengthLongestWord = Vectors.LongestWordVector(words).Length;
-            int numGridRowsCols = NumberGridRowsCols(numCharsInWords, lengthLongestWord);
-            char[,] grid = CreatGrid(numGridRowsCols);
-            PopulateGridWords(words, grid);
-            FillRemainingElements(grid);
-
-            FrontEnd.PrintGrid(grid);
-        }
-
-        private static string[] CreateVectorWords()
-        {
-            string[] wordsInput = new string[] {"chicken", "frog", "cat", "dog", "goat", "moose", "lion", "dolphon", "lemur", "antelope"};
-            string[] words = Vectors.CaptitaliseAll(wordsInput);
+            string[] wordsInput = new string[] { "chicken", "frog", "cat", "dog", "goat", "moose", "lion", "dolphon", "lemur", "antelope" };
+            words = Helper.CaptitaliseAll(wordsInput);
 
             return words;
         }
-        private static int NumberGridRowsCols(int numCharsInWords, int lengthLongestWord)
+
+        /*==============================================*
+        *  Grid (matrix/2D array) setup functionality   *
+        *===============================================*/
+        private void SetupGrid()
+        {
+            // Declare, initialise with null () values, grids
+            int numCharsInWords = Helper.CountLettersVector(words);
+            int lengthLongestWord = Helper.LongestWordVector(words).Length;
+            int numGridRowsCols = NumberGridRowsCols(numCharsInWords, lengthLongestWord);
+            grid = CreatGrid(numGridRowsCols);
+
+            // Populate grid with words, random letters
+            PopulateGridWords(words, grid);
+            FillRemainingElements(grid);
+        }
+        private int NumberGridRowsCols(int numCharsInWords, int lengthLongestWord)
         {
             // minimum grid dimensions to fit longest wordCurrent
             int sizeMinGrid = lengthLongestWord * lengthLongestWord;
@@ -44,9 +57,9 @@ namespace WordSearch
             int totalElementsGridSquare = (int)Math.Sqrt(totalElementsGrid);
 
             // increase current number of grid elements until reaches next root of square (e.g. 5, 6, 7)
-            while (Math.Sqrt(sizeMinGrid) != totalElementsGridSquare+1)
+            while (Math.Sqrt(sizeMinGrid) != totalElementsGridSquare + 1)
             {
-                sizeMinGrid ++;
+                sizeMinGrid++;
             }
 
             // get number of rows/cols
@@ -59,21 +72,20 @@ namespace WordSearch
 
             return numRowsCols;
         }
-        private static char[,] CreatGrid(int numGridElements)
+        private char[,] CreatGrid(int numGridElements)
         {
             // empty grid
             char[,] grid = new char[numGridElements, numGridElements];
-
-            // test grid (to see size)
-            //char[,] grid = Matrices.MatrixRandom(numGridElements, numGridElements, 'a', 'z');
             return grid;
         }
-                
-        // POPULATE METHODS
-        private static void PopulateGridWords(string[] words, char[,] grid)
+
+        /*==============================*
+        *  Handle place words in grid   *
+        *===============================*/
+        private void PopulateGridWords(string[] words, char[,] grid)
         {
             bool wordPlaced = false;
-            int numberWordsToPlace = Vectors.CountElementsVector(words);
+            int numberWordsToPlace = Helper.CountElementsVector(words);
 
             // iterate words to place
             for (int wordCurrent = 0; wordCurrent < numberWordsToPlace; wordCurrent++)
@@ -82,7 +94,7 @@ namespace WordSearch
                 while (!wordPlaced)
                 {
                     // Get random starting point for word
-                    Tuple<int, int> point = Matrices.RandomPointMatrix(grid);
+                    Tuple<int, int> point = Helper.RandomPointMatrix(grid);
 
                     if (PlaceWordInGrid(point, words[wordCurrent], grid))
                     {
@@ -94,8 +106,7 @@ namespace WordSearch
             // fill remaining empty elements with random letters
 
         }        
-        // check space for wordCurrent from position
-        private static bool PlaceWordInGrid(Tuple<int, int> point, string word, char[,] grid)
+        private bool PlaceWordInGrid(Tuple<int, int> point, string word, char[,] grid)
         {
             int x = point.Item1;
             int y = point.Item2;
@@ -160,8 +171,11 @@ namespace WordSearch
             }
             return false;
         }
-        // fill remaining empty elements
-        private static void FillRemainingElements(char[,] grid)
+
+        /*==========================================================*
+        *  Handle fill remaining empty spaces in grid after words   *
+        *===========================================================*/
+        private void FillRemainingElements(char[,] grid)
         {
             for (int counterRow = 0; counterRow < grid.GetLength(0); counterRow++)
             {
@@ -175,11 +189,11 @@ namespace WordSearch
             }
         }
 
-
-        // CHECK SPACE METHODS
-
+        /*==================================================================*
+        *  Check words have space to fit in different directions, orders    *
+        *===================================================================*/
         // Return space to fit word right -> left
-        private static bool SpaceLeft(string word, Tuple<int, int> point, char[,] grid)
+        private bool SpaceLeft(string word, Tuple<int, int> point, char[,] grid)
         {
             int y = point.Item1;
             int x = point.Item2;
@@ -199,7 +213,7 @@ namespace WordSearch
             return false;
         }
         // Return space to fit word left -> right
-        private static bool SpaceRight(string word, Tuple<int, int> point, char[,] grid)
+        private bool SpaceRight(string word, Tuple<int, int> point, char[,] grid)
         {
             int y = point.Item1; // row point
             int x = point.Item2; // column point
@@ -219,7 +233,7 @@ namespace WordSearch
             return false;
         }
         // Return space to fit word up -> down
-        private static bool SpaceDown(string word, Tuple<int, int> point, char[,] grid)
+        private bool SpaceDown(string word, Tuple<int, int> point, char[,] grid)
         {
             int y = point.Item1;
             int x = point.Item2;
@@ -239,7 +253,7 @@ namespace WordSearch
             return false;
         }
         // Return space to fit word down -> up
-        private static bool SpaceUp(string word, Tuple<int, int> point, char[,] grid)
+        private bool SpaceUp(string word, Tuple<int, int> point, char[,] grid)
         {
             int y = point.Item1;
             int x = point.Item2;
@@ -259,8 +273,10 @@ namespace WordSearch
             return false;
         }
 
-        // WORD PLACE METHODS
-        private static void PlaceWordLeft(string word, Tuple<int, int> point, char[,] grid)
+        /*==================================================*
+        *  Word placement for different directions, orders  *
+        *===================================================*/
+        private void PlaceWordLeft(string word, Tuple<int, int> point, char[,] grid)
         {
             int y = point.Item1;
             int x = point.Item2;
@@ -270,7 +286,7 @@ namespace WordSearch
                 grid[x , y - counter] = word[counter];
             }
         }
-        private static void PlaceWordRight(string word, Tuple<int, int> point, char[,] grid)
+        private void PlaceWordRight(string word, Tuple<int, int> point, char[,] grid)
         {
             int y = point.Item1;
             int x = point.Item2;
@@ -280,7 +296,7 @@ namespace WordSearch
                 grid[x, y + counter] = word[counter];
             }
         }
-        private static void PlaceWordDown(string word, Tuple<int, int> point, char[,] grid)
+        private void PlaceWordDown(string word, Tuple<int, int> point, char[,] grid)
         {
             int y = point.Item1;
             int x = point.Item2;
@@ -290,7 +306,7 @@ namespace WordSearch
                 grid[x + counter, y] = word[counter];
             }
         }
-        private static void PlaceWordUp(string word, Tuple<int, int> point, char[,] grid)
+        private void PlaceWordUp(string word, Tuple<int, int> point, char[,] grid)
         {
             int y = point.Item1;
             int x = point.Item2;

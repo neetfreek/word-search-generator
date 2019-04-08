@@ -1,31 +1,88 @@
 ﻿using System;
-using System.Text;
 
-/*==============================================*
-*  Common helper methods for AlgorithmsLibrary  *
-*===============================================*/
+/*==========================================*
+*  Common helper methods for Word Search    *
+*===========================================*/
 namespace WordSearch
 {
     public static class Helper
     {
         private static Random random = new Random();
-
-        /*==============================================================*
-        *  Return whether first INTEGER is greater than second INTEGER  *
-        *   first > second (== true), first < second (== false)         *
-        *===============================================================*/
-        public static bool GreaterThan(int first, int second)
+                              
+        /*==================================================================*
+        *  Return STRING vector with all strings' CHARACTERS capitalised    *
+        *===================================================================*/
+        public static string[] CaptitaliseAll(string[] vector)
         {
-            return first.CompareTo(second) > 0;
+            string toAdd = "";
+
+            string[] vectorCapitalised = new string[vector.Length];
+
+            for (int word = 0; word < vector.Length; word++)
+            {
+                toAdd = "";
+                toAdd = vector[word].ToUpper();
+                vectorCapitalised[word] = toAdd;
+            }
+
+            return vectorCapitalised;
         }
 
         /*======================================*
         *  Return number of digits in INTEGER   *
         *=======================================*/
-        public static int DigitsInInt(int number)
+        public static int CountDigitsInt(int number)
         {
             int numCharsInInt = number.ToString().Length;
             return numCharsInInt;
+        }
+
+        /*==============================================*
+        *  Return INT number of elements in STRING vector   *
+        *===============================================*/
+        public static int CountElementsVector(string[] vector)
+        {
+            int count = 0;
+            foreach (string word in vector)
+            {
+                count++;
+            }
+            return count;
+        }
+
+        /*======================================================================*
+        *  Return INT number of all CHARACTERS in all elements of STRING vector *
+        *=======================================================================*/
+        public static int CountLettersVector(string[] vector)
+        {
+            int count = 0;
+            foreach (string word in vector)
+            {
+                foreach (char character in word)
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        /*======================================================*
+        *  Return STRING with most characters in STRING vector  *
+        *=======================================================*/
+        public static string LongestWordVector(string[] vector)
+        {
+            string longestWord = "";
+
+            foreach (string word in vector)
+            {
+                if (word.Length > longestWord.Length)
+                {
+                    longestWord = word;
+                }
+            }
+
+            return longestWord;
         }
 
         /*==========================================================*
@@ -33,7 +90,7 @@ namespace WordSearch
         *===========================================================*/
         public static int RandomInt(int intMin, int intMax)
         {
-            int intRandom = random.Next(intMin, intMax+1);
+            int intRandom = random.Next(intMin, intMax + 1);
 
             return intRandom;
         }
@@ -49,7 +106,7 @@ namespace WordSearch
             string charSetTotal = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             int indexStart = charSetTotal.IndexOf(minFixed);
             int indexEnd = charSetTotal.IndexOf(maxFixed);
-            int charsToInsertLength = (indexEnd - indexStart) +1;
+            int charsToInsertLength = (indexEnd - indexStart) + 1;
 
             //int indexEnd = charSetTotal.IndexOf(maxFixed);
 
@@ -60,26 +117,21 @@ namespace WordSearch
             }
 
             string charSet = charSetTotal.Substring(indexStart, charsToInsertLength);
-            char charToInsert = charSet[RandomInt(0, charSet.Length-1)];             
+            char charToInsert = charSet[RandomInt(0, charSet.Length - 1)];
 
             return charToInsert;
         }
 
-        /*======================================*
-        *  Return numSpaces blank spaces (" ")  *
-        *=======================================*/
-        public static string Padding(int numSpaces)
+        /*==============================================================================================*
+        *  Return random <INTEGER, INTEGER> point between intMin, intMax inclusive in CHARACTER matrix  *
+        *===============================================================================================*/
+        public static Tuple<int, int> RandomPointMatrix(char[,] matrix)
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            int x = Helper.RandomInt(0, matrix.GetLength(0) - 1);
+            int y = Helper.RandomInt(0, matrix.GetLength(1) - 1);
+            Tuple<int, int> point = new Tuple<int, int>(x, y);
 
-            for (int counter = 0; counter < numSpaces; counter++)
-            {
-                stringBuilder.Append(" ");
-            }
-
-            string gapAlignment = stringBuilder.ToString();
-
-            return gapAlignment;
+            return point;
         }
     }
 }
