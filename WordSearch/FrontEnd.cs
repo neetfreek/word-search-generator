@@ -13,6 +13,18 @@ namespace WordSearch
             StartGame();
         }
 
+        public static void PrintWords(string[] words)
+        {
+            Console.WriteLine($"{Environment.NewLine}=== WORDS ==={Environment.NewLine}");
+            Vectors.PrintVector(words);
+        }
+
+        public static void PrintGrid(char[,] grid)
+        {
+            Console.WriteLine($"{Environment.NewLine}=== WORD SEARCH ==={Environment.NewLine}");
+            Matrices.PrintMatrix(grid);
+        }
+
         private static void StartGame()
         {
             Greet();

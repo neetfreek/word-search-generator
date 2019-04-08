@@ -11,12 +11,11 @@ namespace WordSearch
         }
 
         // SETUP METHODS
-
         private static void Setup()
         {
-            Console.WriteLine($"{Environment.NewLine}=== WORDS ==={Environment.NewLine}");
             string[] words = CreateVectorWords();
-            Vectors.PrintVector(words);
+            FrontEnd.PrintWords(words);
+
             int numCharsInWords = Vectors.CountLettersVector(words);
             int lengthLongestWord = Vectors.LongestWordVector(words).Length;
             int numGridRowsCols = NumberGridRowsCols(numCharsInWords, lengthLongestWord);
@@ -24,8 +23,7 @@ namespace WordSearch
             PopulateGridWords(words, grid);
             FillRemainingElements(grid);
 
-            Console.WriteLine($"{Environment.NewLine}=== WORD SEARCH ==={Environment.NewLine}");
-            Matrices.PrintMatrix(grid);
+            FrontEnd.PrintGrid(grid);
         }
 
         private static string[] CreateVectorWords()
@@ -99,7 +97,6 @@ namespace WordSearch
         // check space for wordCurrent from position
         private static bool PlaceWordInGrid(Tuple<int, int> point, string word, char[,] grid)
         {
-            //Console.WriteLine($"Checkling start point for {word} at {point}");
             int x = point.Item1;
             int y = point.Item2;
 
@@ -115,25 +112,21 @@ namespace WordSearch
                 {
                     if (SpaceRight(word, point, grid))
                     {
-                        //Console.WriteLine("Space left -> right");
                         placementOptions[0] = 1;
                         haveOptions = true;
                     }
                     if (SpaceLeft(word, point, grid))
                     {
-                        //Console.WriteLine("Space right -> left");
                         placementOptions[1] = 2;
                         haveOptions = true;                    
                     }
                     if (SpaceUp(word, point, grid))
                     {
-                        //Console.WriteLine("Space down -> up");
                         placementOptions[2] = 3;
                         haveOptions = true;                    
                     }
                     if (SpaceDown(word, point, grid))
                     {
-                        //Console.WriteLine("Space up -> down");
                         placementOptions[3] = 4;
                         haveOptions = true;                    
                     }
@@ -149,19 +142,15 @@ namespace WordSearch
                         {
                             case 1:
                                 PlaceWordRight(word, point, grid);
-                                //Console.WriteLine($"Placed {word} at {y}, {x}");
                                 break;                                     
                             case 2:                                        
                                 PlaceWordLeft(word, point, grid);          
-                                //Console.WriteLine($"Placed {word} at {y}, {x}");
                                 break;                                    
                             case 3:                                       
                                 PlaceWordUp(word, point, grid);           
-                                //Console.WriteLine($"Placed {word} at {y}, {x}");
                                 break;                                    
                             case 4:                                       
                                 PlaceWordDown(word, point, grid);         
-                                //Console.WriteLine($"Placed {word} at {y}, {x}");
                                 break;
                         }
                         return true;
