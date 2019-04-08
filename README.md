@@ -12,7 +12,8 @@ Cone this repository or download it as a zip.
 Open it up and build the project as Debug or Release.
 Find the `WordSearch.exe` executable file in `WordSearch/bin/Debug` or `WordSearch/bin/Release`
 
-##TODO:
+
+**TODO:**
 - Clean up code in `WordSearch.cs`
 - Add functionality for diagonal words
 - Add functionality for taking words from external data files
