@@ -12,10 +12,10 @@ namespace WordSearch.Common
     {
         public static string[] HandleListLoad(string nameList)
         {
-            string listWordsString = LoadListWords(nameList);
-            string[] listWordsRaw = SeperateWords(listWordsString);
-            string[] listWordsClean = CleanWords(listWordsRaw);
-            string[] words = Helper.CaptitaliseAll(listWordsClean);
+            string wordsString = LoadListWords(nameList);
+            string wordsStringSanitised = SanitiseWords(wordsString);
+            string[] wordsMixedCase = SeperateWords(wordsStringSanitised);
+            string[] words = Helper.CaptitaliseAll(wordsMixedCase);
 
             return words;
         }
@@ -42,17 +42,12 @@ namespace WordSearch.Common
             return words;
         }
 
-        // Return string with all characters save a-z removed
-        private static string[] CleanWords(string[] listWords)
+        // Return string with all characters save a-z, removed
+        private static string SanitiseWords(string listWords)
         {
-            List<string> wordsClean = new List<string>();
+            string wordsSanitised = Regex.Replace(listWords, "[^A-Za-z ]", "");
 
-            for (int counter = 0; counter < listWords.Length; counter++)
-            {
-                string copy = Regex.Replace(listWords[counter], "[^A-Za-z]", "");
-                wordsClean.Add(copy);
-            }
-            return wordsClean.ToArray();
+            return wordsSanitised;
         }
     }
 }
