@@ -3,7 +3,7 @@
 /*==========================================*
 *  Common helper methods for Word Search    *
 *===========================================*/
-namespace WordSearch
+namespace WordSearch.Common
 {
     public static class Helper
     {

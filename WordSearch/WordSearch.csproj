@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Coordinate2D.cs" />
     <Compile Include="Common\Helper.cs" />
     <Compile Include="FrontEnd.cs" />
     <Compile Include="Program.cs" />

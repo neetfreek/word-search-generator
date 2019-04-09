@@ -1,10 +1,10 @@
 ﻿using System;
 
-/*======================================================*
-*  Word Search startup project, entry point             *
-*  Call start of Word Search functionality              *
-*  Call user-facing (front-end) console functionality   *
-*=======================================================*/
+/*==========================================*
+*  Word Search startup project, entry point *
+*  Call start of Word Search functionality  *
+*  Call front end (console) functionality   *
+*===========================================*/
 
 namespace WordSearch
 {
@@ -15,9 +15,9 @@ namespace WordSearch
             GameLoop();
         }
 
-        /*======================================*
-        *  Handle call UI (console) front-end   *
-        *=======================================*/
+        /*==================================*
+        *  Handle fron end (console) calls  *
+        *===================================*/
         public static void PrintStartUI(string[] words, char[,] grid)
         {
             PrintWords(words);

@@ -1,5 +1,5 @@
 ﻿using System;
-
+using WordSearch.Common;
 /*======================================*
 *  Word list, grid setup functionality  *
 *=======================================*/
@@ -94,9 +94,8 @@ namespace WordSearch
                 while (!wordPlaced)
                 {
                     // Get random starting point for word
-                    Tuple<int, int> point = Helper.RandomPointMatrix(grid);
-
-                    if (PlaceWordInGrid(point, words[wordCurrent], grid))
+                    Coordinate2D coord = new Coordinate2D(Helper.RandomInt(0, grid.GetLength(0) - 1), Helper.RandomInt(0, grid.GetLength(1) - 1));
+                    if (PlaceWordInGrid(coord, words[wordCurrent], grid))
                     {
                         wordPlaced = true;
                     }
@@ -106,10 +105,10 @@ namespace WordSearch
             // fill remaining empty elements with random letters
 
         }        
-        private bool PlaceWordInGrid(Tuple<int, int> point, string word, char[,] grid)
+        private bool PlaceWordInGrid(Coordinate2D coord, string word, char[,] grid)
         {
-            int x = point.Item1;
-            int y = point.Item2;
+            int x = coord.X;
+            int y = coord.Y;
 
             // elements represent placements options, 0 == left->right, 1 = right->left, etc. (in order presented below)
             int[] placementOptions = new int[4] { 9, 9, 9, 9 };
@@ -121,22 +120,22 @@ namespace WordSearch
                 // If point empty or point contains same letter word's current character
                 if (grid[x, y] == '\0' | grid[x, y] == word[0])
                 {
-                    if (SpaceRight(word, point, grid))
+                    if (SpaceRight(word, coord, grid))
                     {
                         placementOptions[0] = 1;
                         haveOptions = true;
                     }
-                    if (SpaceLeft(word, point, grid))
+                    if (SpaceLeft(word, coord, grid))
                     {
                         placementOptions[1] = 2;
                         haveOptions = true;                    
                     }
-                    if (SpaceUp(word, point, grid))
+                    if (SpaceUp(word, coord, grid))
                     {
                         placementOptions[2] = 3;
                         haveOptions = true;                    
                     }
-                    if (SpaceDown(word, point, grid))
+                    if (SpaceDown(word, coord, grid))
                     {
                         placementOptions[3] = 4;
                         haveOptions = true;                    
@@ -152,21 +151,20 @@ namespace WordSearch
                         switch (placementOption)
                         {
                             case 1:
-                                PlaceWordRight(word, point, grid);
+                                PlaceWordRight(word, coord, grid);
                                 break;                                     
                             case 2:                                        
-                                PlaceWordLeft(word, point, grid);          
+                                PlaceWordLeft(word, coord, grid);          
                                 break;                                    
                             case 3:                                       
-                                PlaceWordUp(word, point, grid);           
+                                PlaceWordUp(word, coord, grid);           
                                 break;                                    
                             case 4:                                       
-                                PlaceWordDown(word, point, grid);         
+                                PlaceWordDown(word, coord, grid);         
                                 break;
                         }
                         return true;
                     }
-
                 }                
             }
             return false;
@@ -192,18 +190,14 @@ namespace WordSearch
         /*==================================================================*
         *  Check words have space to fit in different directions, orders    *
         *===================================================================*/
-        // Return space to fit word right -> left
-        private bool SpaceLeft(string word, Tuple<int, int> point, char[,] grid)
+        private bool SpaceLeft(string word, Coordinate2D coord, char[,] grid)
         {
-            int y = point.Item1;
-            int x = point.Item2;
-
-            if (y >= word.Length - 1)
+            if (coord.Y >= word.Length - 1)
             {
                 // iterate left in row, checking each successive element empty or same as current char
                 for (int counter = 0; counter < word.Length; counter++)
                 {
-                    if (grid[x, y - counter] != '\0' && grid[x, y - counter] != word[counter])
+                    if (grid[coord.X, coord.Y - counter] != '\0' && grid[coord.X, coord.Y - counter] != word[counter])
                     {
                         return false;
                     }
@@ -211,19 +205,15 @@ namespace WordSearch
                 return true;
             }
             return false;
-        }
-        // Return space to fit word left -> right
-        private bool SpaceRight(string word, Tuple<int, int> point, char[,] grid)
+        } // check space right -> left
+        private bool SpaceRight(string word, Coordinate2D coord, char[,] grid)
         {
-            int y = point.Item1; // row point
-            int x = point.Item2; // column point
-
-            if ((grid.GetLength(0)) - y >= word.Length)
+            if ((grid.GetLength(0)) - coord.Y >= word.Length)
             {
                 // iterate right in row, checking each successive element empty or same as current char
                 for (int counter = 0; counter < word.Length; counter++)
                 {
-                    if (grid[x, y + counter] != '\0' && grid[x, y + counter] != word[counter])
+                    if (grid[coord.X, coord.Y + counter] != '\0' && grid[coord.X, coord.Y + counter] != word[counter])
                     {
                         return false;
                     }
@@ -231,19 +221,15 @@ namespace WordSearch
                 return true;
             }
             return false;
-        }
-        // Return space to fit word up -> down
-        private bool SpaceDown(string word, Tuple<int, int> point, char[,] grid)
+        } // check space left -> right
+        private bool SpaceDown(string word, Coordinate2D coord, char[,] grid)
         {
-            int y = point.Item1;
-            int x = point.Item2;
-
-            if ((grid.GetLength(0)) - x >= word.Length)
+            if ((grid.GetLength(0)) - coord.X >= word.Length)
             {
                 // iterate right in row, checking each successive element empty or same as current char
                 for (int counter = 0; counter < word.Length; counter++)
                 {
-                    if (grid[x + counter, y] != '\0' && grid[x + counter, y] != word[counter])
+                    if (grid[coord.X + counter, coord.Y] != '\0' && grid[coord.X + counter, coord.Y] != word[counter])
                     {
                         return false;
                     }
@@ -251,19 +237,15 @@ namespace WordSearch
                 return true;
             }
             return false;
-        }
-        // Return space to fit word down -> up
-        private bool SpaceUp(string word, Tuple<int, int> point, char[,] grid)
+        } // check space up -> down
+        private bool SpaceUp(string word, Coordinate2D coord, char[,] grid)
         {
-            int y = point.Item1;
-            int x = point.Item2;
-
-            if (x >= word.Length - 1)
+            if (coord.X >= word.Length - 1)
             {
                 // iterate left in row, checking each successive element empty or same as current char
                 for (int counter = 0; counter < word.Length; counter++)
                 {
-                    if (grid[x - counter, y] != '\0' && grid[x - counter, y] != word[counter])
+                    if (grid[coord.X - counter, coord.Y] != '\0' && grid[coord.X - counter, coord.Y] != word[counter])
                     {
                         return false;
                     }
@@ -271,50 +253,39 @@ namespace WordSearch
                 return true;
             }
             return false;
-        }
+        } // check space down -> up
 
         /*==================================================*
         *  Word placement for different directions, orders  *
         *===================================================*/
-        private void PlaceWordLeft(string word, Tuple<int, int> point, char[,] grid)
+        private void PlaceWordLeft(string word, Coordinate2D coord, char[,] grid)
         {
-            int y = point.Item1;
-            int x = point.Item2;
-
             for (int counter = 0; counter < word.Length; counter++)
             {
-                grid[x , y - counter] = word[counter];
+                grid[coord.X, coord.Y - counter] = word[counter];
             }
-        }
-        private void PlaceWordRight(string word, Tuple<int, int> point, char[,] grid)
+        } // place word right -> left
+        private void PlaceWordRight(string word, Coordinate2D coord, char[,] grid)
         {
-            int y = point.Item1;
-            int x = point.Item2;
-
             for (int counter = 0; counter < word.Length; counter++)
             {
-                grid[x, y + counter] = word[counter];
+                grid[coord.X, coord.Y + counter] = word[counter];
             }
-        }
-        private void PlaceWordDown(string word, Tuple<int, int> point, char[,] grid)
+        } // place word left -> right
+        private void PlaceWordDown(string word, Coordinate2D coord, char[,] grid)
         {
-            int y = point.Item1;
-            int x = point.Item2;
-
             for (int counter = 0; counter < word.Length; counter++)
             {
-                grid[x + counter, y] = word[counter];
+                grid[coord.X + counter, coord.Y] = word[counter];
             }
-        }
-        private void PlaceWordUp(string word, Tuple<int, int> point, char[,] grid)
+        } // place word up -> down
+        private void PlaceWordUp(string word, Coordinate2D coord, char[,] grid)
         {
-            int y = point.Item1;
-            int x = point.Item2;
-
             for (int counter = 0; counter < word.Length; counter++)
             {
-                grid[x - counter, y] = word[counter];
+                grid[coord.X - counter, coord.Y] = word[counter];
             }
-        }
+        } // place word down -> up
     }
 }
+
