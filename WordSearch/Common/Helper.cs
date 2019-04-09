@@ -112,7 +112,6 @@ namespace WordSearch.Common
 
             if (indexStart == -1 | indexEnd == -1)
             {
-                Console.WriteLine("Aborting. Entered character(s) not letters.");
                 return ('\0');
             }
 

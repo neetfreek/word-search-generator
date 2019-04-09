@@ -1,70 +1,114 @@
 ﻿using System;
 
-/*==========================================*
-*  Word Search startup project, entry point *
-*  Call start of Word Search functionality  *
-*  Call front end (console) functionality   *
-*===========================================*/
+/*==========================================================*
+*  Word Search startup project, entry point                 *
+*  Handles setting up game by:                              *
+*  1. Calling DataHandler.cs to get word list               *
+*  2. Calling FrontEnd.cs handle user input, display output *
+*  3. Calling WordSearch.cs to generate grid                *
+*===========================================================*/
 
 namespace WordSearch
 {
     class Program
     {
+        // set true in GameLoop, skips SetupLoop while loop on game restart
+       static bool inGame = false;
+
+        /*======================*
+        *  Program entry point  *
+        *=======================*/
         static void Main(string[] args)
         {
-            //Common.DataHandler.AllLists();
-            StartGame();
+            StartSetup();
         }
 
         /*==================================*
-        *  Handle front end (console) calls  *
+        *  Game setup and setup user input  *
         *===================================*/
-        public static void PrintStartUI(string[] words, char[,] grid)
-        {
-            PrintWords(words);
-            PrintGrid(grid);
-        }
-        private static void PrintWords(string[] words)
-        {
-            Console.WriteLine($"{Environment.NewLine}=== WORDS ==={Environment.NewLine}");
-            FrontEnd.PrintWordsToFind(words);
-        }
-        private static void PrintGrid(char[,] grid)
-        {
-            Console.WriteLine($"{Environment.NewLine}=== WORD SEARCH ==={Environment.NewLine}");
-            FrontEnd.PrintMatrix(grid);
-        }
-
-        /*==============================*
-        *  Handle play, re-play game    *
-        *===============================*/
-        private static void StartGame()
+        private static void StartSetup()
         {
             FrontEnd.MessageGreet();
-            WordSearch wordSearch = new WordSearch();
+            FrontEnd.MessagePromptStart();
+            SetupLoop();
+        }
+        private static void SetupLoop()
+        {
+            bool setup = true;
 
-            string listSelected = SetupListWords();
-            wordSearch.SetupWordSearch(listSelected);
-
-            FrontEnd.PrintGame(wordSearch.words, wordSearch.grid);
-            FrontEnd.MessageEnd();
-
-            if (FrontEnd.MessageRestartGame())
+            while (setup && !inGame)
             {
-                StartGame();
+                char input = FrontEnd.ReadUserInput();
+                switch (input)
+                {
+                    case 'p':
+                        HandleStartGame();
+                        break;
+                    case 'q':
+                        Environment.Exit(0);
+                        break;
+                }
             }
+            HandleStartGame();
         }
 
-        private static string SetupListWords()
+        /*==================================*
+        *  Game start and in-game input     *
+        *===================================*/
+        private static void HandleStartGame()
+        {
+            FrontEnd.MessageLists();
+            StartGame();
+            GameLoop();
+        }
+        private static void StartGame()
         {
             string listSelected = "";
 
             while (listSelected == "")
             {
-                listSelected = FrontEnd.MessageSelectList();
+                char input = FrontEnd.ReadUserInput();
+
+                switch (input)
+                {
+                    case 'a':
+                        listSelected = "Animals";
+                        break;
+                    case 't':
+                        listSelected = "Trees";
+                        break;
+                    case 'f':
+                        listSelected = "Fish";
+                        break;
+                }
             }
 
-            return listSelected;
+            WordSearch wordSearch = new WordSearch();
+            wordSearch.SetupWordSearch(listSelected);
+
+            FrontEnd.HandlePrintInGame(wordSearch.words, wordSearch.grid);
+            FrontEnd.MessageEnd();
+        }
+        private static void GameLoop()
+        {
+            FrontEnd.MessagePromptRestart();
+
+            inGame = true;
+
+            while (inGame)
+            {
+                char input = FrontEnd.ReadUserInput();
+
+                switch (input)
+                {
+                    case 'p':
+                        StartSetup();
+                        break;
+                    case 'q':
+                        Environment.Exit(0);
+                        break;
+                }
+            }
         }
     }
 }
