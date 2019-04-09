@@ -1,29 +1,29 @@
 ﻿namespace WordSearch.Common
 {
-    public class Coordinate2D
+    public class GridPosition2D
     {
-        private int x;
-        private int y;
+        private int row;
+        private int col;
 
-        public int X
+        public int Row
         {
             get
             {
-                return x;
+                return row;
             }
         }
-        public int Y
+        public int Col
         {
             get
             {
-                return y;
+                return col;
             }
         }
 
-        public Coordinate2D(int x, int y)
+        public GridPosition2D(int row, int col)
         {
-            this.x = x;
-            this.y = y;
+            this.row = col;
+            this.col = row;
         }
     }
 }
