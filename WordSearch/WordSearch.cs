@@ -25,8 +25,8 @@ namespace WordSearch
         *===================================================*/
         private string[] SetupWords()
         {
-            string[] wordsInput = new string[] { "chicken", "frog", "cat", "dog", "goat", "moose", "lion", "dolphon", "lemur", "antelope" };
-            words = Helper.CaptitaliseAll(wordsInput);
+            //string[] wordsInput = new string[] {"chicken", "frog", "cat", "dog", "goat", "moose", "lion", "dolphin", "lemur", "antelope" };
+            words = DataHandler.HandleListLoad("Animals");
 
             return words;
         }
@@ -392,7 +392,6 @@ namespace WordSearch
             {
                 grid[pos.Row - counter, pos.Col + counter] = word[counter];
             }
-            Console.WriteLine($"Placed {word} diagonally up-right at row {pos.Row}, col {pos.Col}");
         } // place word diagonal left -> up right
         private void PlaceWordDownRight(string word, GridPosition2D pos, char[,] grid)
         {
@@ -400,7 +399,6 @@ namespace WordSearch
             {
                 grid[pos.Row + counter, pos.Col + counter] = word[counter];
             }
-            Console.WriteLine($"Placed {word} diagonally down-right at row {pos.Row}, col {pos.Col}");
         } // place word diagonal left -> down right
         private void PlaceWordUpLeft(string word, GridPosition2D pos, char[,] grid)
         {
@@ -408,16 +406,13 @@ namespace WordSearch
             {
                 grid[pos.Row - counter, pos.Col - counter] = word[counter];
             }
-            Console.WriteLine($"Placed {word} diagonally up-left at row {pos.Row}, col {pos.Col}");
         } // place word diagonal left -> up left
         private void PlaceWordDownLeft(string word, GridPosition2D pos, char[,] grid)
         {
             for (int counter = 0; counter < word.Length; counter++)
             {
-                Console.WriteLine($"D.D.L chec pos {pos.Row + counter},  {pos.Col - counter}");
                 grid[pos.Row + counter, pos.Col - counter] = word[counter];
             }
-            Console.WriteLine($"Placed {word} diagonally up-left at row {pos.Row}, col {pos.Col}");
         } // place word diagonal left -> down left
     }
 }

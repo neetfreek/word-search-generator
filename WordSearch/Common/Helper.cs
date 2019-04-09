@@ -121,17 +121,5 @@ namespace WordSearch.Common
 
             return charToInsert;
         }
-
-        /*==============================================================================================*
-        *  Return random <INTEGER, INTEGER> point between intMin, intMax inclusive in CHARACTER matrix  *
-        *===============================================================================================*/
-        public static Tuple<int, int> RandomPointMatrix(char[,] matrix)
-        {
-            int x = Helper.RandomInt(0, matrix.GetLength(0) - 1);
-            int y = Helper.RandomInt(0, matrix.GetLength(1) - 1);
-            Tuple<int, int> point = new Tuple<int, int>(x, y);
-
-            return point;
-        }
     }
 }
