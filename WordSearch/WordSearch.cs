@@ -1,5 +1,6 @@
 ﻿using System;
 using WordSearch.Common;
+
 /*======================================*
 *  Word list, grid setup functionality  *
 *=======================================*/
@@ -14,19 +15,18 @@ namespace WordSearch
         /*==============================================================================*
         *  Handle creation of words to find, grid, call front-end to display to user    *
         *===============================================================================*/
-        public void SetupWordSearch()
+        public void SetupWordSearch(string listSelected)
         {
-            SetupWords();
+            SetupWords(listSelected);
             SetupGrid();
         }
 
         /*==================================================*
         *  Word list (vector/1D array) setup functionality  *
         *===================================================*/
-        private string[] SetupWords()
+        private string[] SetupWords(string listSelected)
         {
-            //string[] wordsInput = new string[] {"chicken", "frog", "cat", "dog", "goat", "moose", "lion", "dolphin", "lemur", "antelope" };
-            words = DataHandler.HandleListLoad("Animals");
+            words = DataHandler.HandleListLoad(listSelected);
 
             return words;
         }
@@ -74,7 +74,6 @@ namespace WordSearch
         }
         private char[,] CreatGrid(int numGridElements)
         {
-            // empty grid
             char[,] grid = new char[numGridElements, numGridElements];
             return grid;
         }

@@ -12,11 +12,12 @@ namespace WordSearch
     {
         static void Main(string[] args)
         {
-            GameLoop();
+            //Common.DataHandler.AllLists();
+            StartGame();
         }
 
         /*==================================*
-        *  Handle fron end (console) calls  *
+        *  Handle front end (console) calls  *
         *===================================*/
         public static void PrintStartUI(string[] words, char[,] grid)
         {
@@ -26,7 +27,7 @@ namespace WordSearch
         private static void PrintWords(string[] words)
         {
             Console.WriteLine($"{Environment.NewLine}=== WORDS ==={Environment.NewLine}");
-            FrontEnd.PrintVector(words);
+            FrontEnd.PrintWordsToFind(words);
         }
         private static void PrintGrid(char[,] grid)
         {
@@ -37,19 +38,33 @@ namespace WordSearch
         /*==============================*
         *  Handle play, re-play game    *
         *===============================*/
-        private static void GameLoop()
+        private static void StartGame()
         {
+            FrontEnd.MessageGreet();
             WordSearch wordSearch = new WordSearch();
 
-            FrontEnd.MessageGreet();
-            wordSearch.SetupWordSearch();
-            PrintStartUI(wordSearch.words, wordSearch.grid);
+            string listSelected = SetupListWords();
+            wordSearch.SetupWordSearch(listSelected);
+
+            FrontEnd.PrintGame(wordSearch.words, wordSearch.grid);
             FrontEnd.MessageEnd();
 
             if (FrontEnd.MessageRestartGame())
             {
-                GameLoop();
+                StartGame();
             }
+        }
+
+        private static string SetupListWords()
+        {
+            string listSelected = "";
+
+            while (listSelected == "")
+            {
+                listSelected = FrontEnd.MessageSelectList();
+            }
+
+            return listSelected;
         }
     }
 }

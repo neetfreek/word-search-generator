@@ -20,13 +20,28 @@ namespace WordSearch.Common
             return words;
         }
 
+        public static string[] AllLists()
+        {
+            XElement dataWords = XElement.Parse(Properties.Resources.DataWords);
+            var xElements = dataWords.Elements();
+            List<string> listOfLists = new List<string>();
+
+            foreach (var item in xElements)
+            {
+                listOfLists.Add(item.Name.ToString());
+            }
+            string[] lists = listOfLists.ToArray();
+
+            return lists;
+        }
+
         // return STRING of specified list of words in DataWords.xml
         private static string LoadListWords(string nameListWords)
         {                       
             XElement dataWords = XElement.Parse(Properties.Resources.DataWords);
 
             string list = (string)
-                (from el in dataWords.Descendants(nameListWords)
+                (from el in dataWords.Elements(nameListWords)
                  select el).First();
 
             return list;

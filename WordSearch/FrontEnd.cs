@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using WordSearch.Common;
 
 /*======================================================*
 *  Handle user-facing (front-end) console functionality *
@@ -30,6 +31,26 @@ namespace WordSearch
                 $"https://neetfreek.net {Environment.NewLine}" +
                 $"jonathan.widdowson@neetfreek.net");
         }
+        public static string MessageSelectList()
+        {
+            Console.WriteLine("Select a list:");
+            PrintListOfLists(DataHandler.AllLists());
+
+            char input = Console.ReadKey().KeyChar;
+            if (input == 'A' | input == 'a')
+            {
+                return "Animals";
+            }
+            if (input == 'T' | input == 't')
+            {
+                return "Trees";
+            }
+            if (input == 'F' | input == 'f')
+            {
+                return "Fish";
+            }
+            return "";
+        }
         public static bool MessageRestartGame()
         {
             char input = Console.ReadKey().KeyChar;
@@ -39,6 +60,18 @@ namespace WordSearch
                 return true;
             }
             return false;
+        }
+
+        /*==============================*
+        *  Print words to find, grid    *
+        *===============================*/
+        public static void PrintGame(string[] words, char[,] grid)
+        {
+            Console.WriteLine($"{Environment.NewLine}=== WORDS ==={Environment.NewLine}");
+            PrintWordsToFind(words);
+
+            Console.WriteLine($"{Environment.NewLine}=== WORD SEARCH ==={Environment.NewLine}");
+            PrintMatrix(grid);
         }
 
         /*=========================================================*
@@ -69,7 +102,7 @@ namespace WordSearch
         /*==============================================================*
         *  Print vector (1D array) to user in UI (console) front-end    *
         *===============================================================*/
-        public static void PrintVector(string[] vectorToPrint)
+        public static void PrintWordsToFind(string[] vectorToPrint)
         {
             int length = vectorToPrint.Length;
 
@@ -79,7 +112,24 @@ namespace WordSearch
                 // Print element with space
                 Console.Write($"{vectorToPrint[i]} ");
             }
-            // 
+            Console.Write(Environment.NewLine);
+        }
+        public static void PrintListOfLists(string[] vectorToPrint)
+        {
+            int length = vectorToPrint.Length;
+
+            // Iterate elements
+            for (int counter = 0; counter < length; counter++)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                foreach (char character in vectorToPrint[counter])
+                {
+                    Console.Write($"{character}");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                Console.Write($" ");
+                //Console.Write($"{vectorToPrint[counter]} ");
+            }
             Console.Write(Environment.NewLine);
         }
 
