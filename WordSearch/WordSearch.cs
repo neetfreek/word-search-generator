@@ -44,7 +44,7 @@ namespace WordSearch
 
             // Populate grid with words, random letters
             PopulateGridWords(words, grid);
-            //FillRemainingElements(grid);
+            FillRemainingElements(grid);
         }
         private int NumberGridRowsCols(int numCharsInWords, int lengthLongestWord)
         {
