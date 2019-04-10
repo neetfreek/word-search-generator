@@ -12,7 +12,7 @@ namespace WordSearch
 {
     class Program
     {
-        // set true in GameLoop, skips SetupLoop while loop on game restart
+        // set true in GameLoop, skips HandleNewGame while loop on game restart
        static bool inGame = false;
 
         /*======================*
@@ -20,89 +20,111 @@ namespace WordSearch
         *=======================*/
         static void Main(string[] args)
         {
-            StartSetup();
+            StartScreen();
         }
 
         /*==================================*
         *  Game setup and setup user input  *
         *===================================*/
-        private static void StartSetup()
+        private static void StartScreen()
         {
             FrontEnd.MessageGreet();
             FrontEnd.MessagePromptStart();
-            SetupLoop();
+            HandleNewGame();
         }
-        private static void SetupLoop()
+
+        private static void HandleNewGame()
         {
             bool setup = true;
-
             while (setup && !inGame)
             {
                 char input = FrontEnd.ReadUserInput();
                 switch (input)
                 {
                     case 'p':
-                        HandleStartGame();
+                        HandleSetupGame();
                         break;
                     case 'q':
                         Environment.Exit(0);
                         break;
                 }
             }
-            HandleStartGame();
+            HandleSetupGame();
         }
-
-        /*==================================*
-        *  Game start and in-game input     *
-        *===================================*/
-        private static void HandleStartGame()
+        private static void HandleSetupGame()
         {
-            FrontEnd.MessageLists();
-            StartGame();
+            FrontEnd.MessageListSize();
+            int listSize = HandleGetSizeSelection();
+            FrontEnd.MessageListSelect();
+            string listSelected = HandleGetListSelection();
+            SetupGame(listSize, listSelected);
+            FrontEnd.MessagePromptRestart();
             GameLoop();
         }
-        private static void StartGame()
+        private static int HandleGetSizeSelection()
         {
-            string listSelected = "";
-
-            while (listSelected == "")
+            int listSize = 0;
+            while (listSize == 0)
             {
                 char input = FrontEnd.ReadUserInput();
-
                 switch (input)
                 {
-                    case 'a':
-                        listSelected = "Animals";
+                    case 's':
+                        listSize = 6;
                         break;
-                    case 't':
-                        listSelected = "Trees";
+                    case 'm':
+                        listSize = 12;
                         break;
-                    case 'f':
-                        listSelected = "Fish";
+                    case 'l':
+                        listSize = 18;
                         break;
                 }
             }
-
+            return listSize;
+        }
+        private static string HandleGetListSelection()
+        {
+            string listSelected = "";
+            while (listSelected == "")
+            {
+                char input = FrontEnd.ReadUserInput();
+                switch (input)
+                {
+                    case 'i':
+                        listSelected = "Instruments";
+                        break;
+                    case 'm':
+                        listSelected = "Mammals";
+                        break;
+                    case 'o':
+                        listSelected = "Occupations";
+                        break;
+                }
+            }
+            return listSelected;
+        }
+        private static void SetupGame(int sizeList, string nameList)
+        {
             WordSearch wordSearch = new WordSearch();
-            wordSearch.SetupWordSearch(listSelected);
+            wordSearch.SetupWordSearch(nameList, sizeList);
 
             FrontEnd.HandlePrintInGame(wordSearch.words, wordSearch.grid);
             FrontEnd.MessageEnd();
         }
+
+        /*======================*
+        * In-game user input    *
+        *=======================*/
         private static void GameLoop()
         {
-            FrontEnd.MessagePromptRestart();
-
             inGame = true;
-
             while (inGame)
             {
                 char input = FrontEnd.ReadUserInput();
-
                 switch (input)
                 {
                     case 'p':
-                        StartSetup();
+                        StartScreen();
                         break;
                     case 'q':
                         Environment.Exit(0);

@@ -24,7 +24,6 @@ namespace WordSearch.Common
                 toAdd = vector[word].ToUpper();
                 vectorCapitalised[word] = toAdd;
             }
-
             return vectorCapitalised;
         }
 
@@ -34,6 +33,7 @@ namespace WordSearch.Common
         public static int CountDigitsInt(int number)
         {
             int numCharsInInt = number.ToString().Length;
+
             return numCharsInInt;
         }
 
@@ -63,7 +63,6 @@ namespace WordSearch.Common
                     count++;
                 }
             }
-
             return count;
         }
 
@@ -81,7 +80,6 @@ namespace WordSearch.Common
                     longestWord = word;
                 }
             }
-
             return longestWord;
         }
 

@@ -15,18 +15,18 @@ namespace WordSearch
         /*==============================================================================*
         *  Handle creation of words to find, grid, call front-end to display to user    *
         *===============================================================================*/
-        public void SetupWordSearch(string listSelected)
+        public void SetupWordSearch(string listSelected, int listSize)
         {
-            SetupWords(listSelected);
+            SetupListWords(listSelected, listSize);
             SetupGrid();
         }
 
         /*==================================================*
         *  Word list (vector/1D array) setup functionality  *
         *===================================================*/
-        private string[] SetupWords(string listSelected)
+        private string[] SetupListWords(string listSelected, int listSize)
         {
-            words = DataHandler.HandleListLoad(listSelected);
+            words = DataHandler.HandleListLoad(listSelected, listSize);
 
             return words;
         }
@@ -75,6 +75,7 @@ namespace WordSearch
         private char[,] CreatGrid(int numGridElements)
         {
             char[,] grid = new char[numGridElements, numGridElements];
+
             return grid;
         }
 

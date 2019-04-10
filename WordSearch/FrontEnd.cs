@@ -27,7 +27,18 @@ namespace WordSearch
             CharColourRed('Q');
             Console.Write($" to Quit.{Environment.NewLine}");
         }
-        public static void MessageLists()
+        public static void MessageListSize()
+        {
+            Console.WriteLine($"{Environment.NewLine}Select a list size:{Environment.NewLine}");
+            CharColourGreen('S');
+            Console.Write("mall, ");
+            CharColourGreen('M');
+            Console.Write("edium, ");
+            CharColourGreen('L');
+            Console.Write("arge.");
+            Console.WriteLine();
+        }
+        public static void MessageListSelect()
         {
             Console.WriteLine($"{Environment.NewLine}Select a list:{Environment.NewLine}");
             PrintListOfLists(DataHandler.AllLists());
@@ -58,6 +69,7 @@ namespace WordSearch
             char input = Console.ReadKey().KeyChar;
             input = char.ToLower(input);
             Console.Write("\b \b");
+
             return input;
         }
 
@@ -75,13 +87,29 @@ namespace WordSearch
         }
         private static void PrintWordsToFind(string[] vectorToPrint)
         {
+            int counterNewLine = 0;
             int length = vectorToPrint.Length;
 
-            for (int i = 0; i < length; i++)
+            for (int counter = 0; counter < length; counter++)
             {
                 // Print each word to find seperated by space
-                Console.Write($"{vectorToPrint[i]} ");
+                Console.Write($"{vectorToPrint[counter]} ");
+
+                // new line every six words
+                if (counter == 0)
+                {
+                    counterNewLine = 1;
+                }
+                else
+                {
+                    counterNewLine++;
+                }
+                if (counterNewLine % 6 == 0 && counter != length-1)
+                {
+                    Console.WriteLine();
+                }
             }
+
         }
         private static void PrintGrid(char[,] matrixToPrint)
         {
