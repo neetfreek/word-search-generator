@@ -1,62 +1,88 @@
-﻿using System;
+﻿/*==================================================================================*
+*  Manage and hold word list, grid                                                  *
+*===================================================================================*
+* 1. Contain words to find and Grid properties, set via fields                      *
+* 2. Handle setup of words to find array, DataHandler called to return words array  *
+* 3. ROUTINE: Handle setup of grid:                                                 *
+*   a. Handle setup empty grid                                                      *
+*       i. Size based on 1) total number characters in words 2) longest word        *
+*       ii. Create empty grid                                                       *
+*   b. Handle populate grid with words to find                                      *
+*   c. Populate remaining empty grid elements with random characters                *
+* 4. Check words have space to fit in grid with different directions, orders        *
+* 5. Place words in grid in different directions, orders                            *
+*===================================================================================*/
+using System;
 using WordSearch.Common;
-
-/*======================================*
-*  Word list, grid setup functionality  *
-*=======================================*/
 
 namespace WordSearch
 {
     public class WordSearch
     {
-        public string[] words;
-        public char[,] grid;
-
         /*==============================================================================*
-        *  Handle creation of words to find, grid, call front-end to display to user    *
+        *  1. Fields for setting and properties for safe access of word array and grid  *
+        *   a. Fields set in HandleSetupWords(), HandleSetupGrid()                      *
+        *   b. Properties used by this and other classes                                *
         *===============================================================================*/
-        public void SetupWordSearch(string listSelected, int listSize)
+        private string[] words;
+        private char[,] grid;
+        // properties for access
+        public string[] Words
         {
-            SetupListWords(listSelected, listSize);
-            SetupGrid();
+            get
+            {
+                return words;
+            }
+        }
+        public char[,] Grid
+        {
+            get
+            {
+                return grid;
+            }
         }
 
-        /*==================================================*
-        *  Word list (vector/1D array) setup functionality  *
-        *===================================================*/
-        private string[] SetupListWords(string listSelected, int listSize)
+        /*==================================*
+        *  2. Handle setup words to find    *
+        *===================================*/
+        public void HandleSetupWords(string listSelected, int listSize)
         {
             words = DataHandler.HandleListLoad(listSelected, listSize);
 
-            return words;
+            //return Words;
         }
 
-        /*==============================================*
-        *  Grid (matrix/2D array) setup functionality   *
-        *===============================================*/
-        private void SetupGrid()
+        /*======================================*
+        *  3. Handle setup grid size, populate  *
+        *=======================================*/
+        public void HandleSetupGrid()
+        {
+            HandleSetupEmptyGrid();
+            PopulateGridWords(Words, Grid);
+            PopulateEmptyElements(Grid);
+        }
+        /*==============================*
+        *  3.a. Handle setup empty grid *
+        *===============================*/
+        private void HandleSetupEmptyGrid()
         {
             // Declare, initialise with null () values, grids
-            int numCharsInWords = Helper.CountLettersVector(words);
-            int lengthLongestWord = Helper.LongestWordVector(words).Length;
-            int numGridRowsCols = NumberGridRowsCols(numCharsInWords, lengthLongestWord);
-            grid = CreatGrid(numGridRowsCols);
-
-            // Populate grid with words, random letters
-            PopulateGridWords(words, grid);
-            FillRemainingElements(grid);
+            int numCharsInWords = Helper.CountWordsCharactersAll(Words);
+            int lengthLongestWord = Helper.LongestWord(Words).Length;
+            int numGridRowsCols = SetGridSize(numCharsInWords, lengthLongestWord);
+            SetupEmptyGrid(numGridRowsCols);
         }
-        private int NumberGridRowsCols(int numCharsInWords, int lengthLongestWord)
+        private int SetGridSize(int numCharsInWords, int lengthLongestWord)
         {
-            // minimum grid dimensions to fit longest wordCurrent
+            // minimum Grid dimensions to fit longest wordCurrent
             int sizeMinGrid = lengthLongestWord * lengthLongestWord;
 
-            // add extra grid elements to ensure enough space for non-wordCurrent characters
+            // add extra Grid elements to ensure enough space for non-wordCurrent characters
             int totalElementsGrid = numCharsInWords * 3;
 
             int totalElementsGridSquare = (int)Math.Sqrt(totalElementsGrid);
 
-            // increase current number of grid elements until reaches next root of square (e.g. 5, 6, 7)
+            // increase current number of Grid elements until reaches next root of square (e.g. 5, 6, 7)
             while (Math.Sqrt(sizeMinGrid) != totalElementsGridSquare + 1)
             {
                 sizeMinGrid++;
@@ -72,40 +98,34 @@ namespace WordSearch
 
             return numRowsCols;
         }
-        private char[,] CreatGrid(int numGridElements)
+        private void SetupEmptyGrid(int numGridElements)
         {
-            char[,] grid = new char[numGridElements, numGridElements];
-
-            return grid;
+            grid = new char[numGridElements, numGridElements];
         }
-
-        /*==============================*
-        *  Handle place words in grid   *
-        *===============================*/
+        /*======================================*
+        *  3.b. Handle populate grid with words *
+        *=======================================*/
         private void PopulateGridWords(string[] words, char[,] grid)
         {
             bool wordPlaced = false;
-            int numberWordsToPlace = Helper.CountElementsVector(words);
+            int numberWordsToPlace = Helper.CountElements(words);
 
-            // iterate words to place
+            // iterate Words to place
             for (int wordCurrent = 0; wordCurrent < numberWordsToPlace; wordCurrent++)
             {
                 wordPlaced = false;
                 while (!wordPlaced)
                 {
                     // Get random starting point for word
-                    GridPosition2D coord = new GridPosition2D(Helper.RandomInt(0, grid.GetLength(0) - 1), Helper.RandomInt(0, grid.GetLength(1) - 1));
+                    GridPosition coord = new GridPosition(Helper.Random(0, grid.GetLength(0) - 1), Helper.Random(0, grid.GetLength(1) - 1));
                     if (PlaceWordInGrid(coord, words[wordCurrent], grid))
                     {
                         wordPlaced = true;
                     }
                 }
             }
-
-            // fill remaining empty elements with random letters
-
         }        
-        private bool PlaceWordInGrid(GridPosition2D pos, string word, char[,] grid)
+        private bool PlaceWordInGrid(GridPosition pos, string word, char[,] grid)
         {
             int x = pos.Row;
             int y = pos.Col;
@@ -165,7 +185,7 @@ namespace WordSearch
                     {
                         while (placementOption == 9)
                         {
-                            placementOption = placementOptions[Helper.RandomInt(0, placementOptions.Length - 1)];
+                            placementOption = placementOptions[Helper.Random(0, placementOptions.Length - 1)];
                         }
 
                         switch (placementOption)
@@ -201,11 +221,10 @@ namespace WordSearch
             }
             return false;
         }
-
-        /*==========================================================*
-        *  Handle fill remaining empty spaces in grid after words   *
-        *===========================================================*/
-        private void FillRemainingElements(char[,] grid)
+        /*======================================*
+        *  3.c. Populate empty grid elements    *
+        *=======================================*/
+        private void PopulateEmptyElements(char[,] grid)
         {
             for (int counterRow = 0; counterRow < grid.GetLength(0); counterRow++)
             {
@@ -213,16 +232,16 @@ namespace WordSearch
                 {
                     if (grid[counterRow, counterCol] == '\0')
                     {
-                        grid[counterRow, counterCol] = Helper.RandomLetter('a', 'z');
+                        grid[counterRow, counterCol] = Helper.Random('a', 'z');
                     }
                 }
             }
         }
 
-        /*==================================================================*
-        *  Check words have space to fit in different directions, orders    *
-        *===================================================================*/
-        private bool SpaceRight(string word, GridPosition2D pos, char[,] grid)
+        /*==============================*
+        *  4. Check words fit in grid   *
+        *===============================*/
+        private bool SpaceRight(string word, GridPosition pos, char[,] grid)
         {
             if ((grid.GetLength(0)) - pos.Col >= word.Length)
             {
@@ -238,7 +257,7 @@ namespace WordSearch
             }
             return false;
         } // check space left -> right
-        private bool SpaceLeft(string word, GridPosition2D pos, char[,] grid)
+        private bool SpaceLeft(string word, GridPosition pos, char[,] grid)
         {
             if (pos.Col >= word.Length - 1)
             {
@@ -254,7 +273,7 @@ namespace WordSearch
             }
             return false;
         } // check space right -> left
-        private bool SpaceDown(string word, GridPosition2D pos, char[,] grid)
+        private bool SpaceDown(string word, GridPosition pos, char[,] grid)
         {
             if ((grid.GetLength(0)) - pos.Row >= word.Length)
             {
@@ -270,7 +289,7 @@ namespace WordSearch
             }
             return false;
         } // check space up -> down
-        private bool SpaceUp(string word, GridPosition2D pos, char[,] grid)
+        private bool SpaceUp(string word, GridPosition pos, char[,] grid)
         {
             if (pos.Row >= word.Length - 1)
             {
@@ -286,7 +305,7 @@ namespace WordSearch
             }
             return false;
         } // check space down -> up
-        private bool SpaceUpRight(string word, GridPosition2D pos, char[,] grid)
+        private bool SpaceUpRight(string word, GridPosition pos, char[,] grid)
         {
             if ((grid.GetLength(0)) - pos.Col >= word.Length && // if space right
                 (pos.Row >= word.Length - 1)) // if space up
@@ -303,7 +322,7 @@ namespace WordSearch
             }
             return false;
         } // check space diagonal left -> up right
-        private bool SpaceDownRight(string word, GridPosition2D pos, char[,] grid)
+        private bool SpaceDownRight(string word, GridPosition pos, char[,] grid)
         {
             if ((grid.GetLength(0)) - pos.Col >= word.Length && // if space right
                 (grid.GetLength(1)) - pos.Row >= word.Length) // if space down
@@ -320,7 +339,7 @@ namespace WordSearch
             }
             return false;
         } // check space diagonal left -> down right
-        private bool SpaceUpLeft(string word, GridPosition2D pos, char[,] grid)
+        private bool SpaceUpLeft(string word, GridPosition pos, char[,] grid)
         {
             if (pos.Row >= word.Length - 1 && // if space up
                 pos.Col >= word.Length - 1) // if space left
@@ -337,7 +356,7 @@ namespace WordSearch
             }
             return false;
         } // check space diagonal left -> up right
-        private bool SpaceDownLeft(string word, GridPosition2D pos, char[,] grid)
+        private bool SpaceDownLeft(string word, GridPosition pos, char[,] grid)
         {
             if ((grid.GetLength(0)) - pos.Row >= word.Length && // if space down
                 pos.Col >= word.Length - 1) // if space left
@@ -355,59 +374,59 @@ namespace WordSearch
             return false;
         } // check space diagonal left -> up right
 
-        /*==================================================*
-        *  Word placement for different directions, orders  *
-        *===================================================*/
-        private void PlaceWordRight(string word, GridPosition2D pos, char[,] grid)
+        /*==============================*
+        *  5. Word placement in grid    *
+        *===============================*/
+        private void PlaceWordRight(string word, GridPosition pos, char[,] grid)
         {
             for (int counter = 0; counter < word.Length; counter++)
             {
                 grid[pos.Row, pos.Col + counter] = word[counter];
             }
         } // place word left -> right
-        private void PlaceWordLeft(string word, GridPosition2D pos, char[,] grid)
+        private void PlaceWordLeft(string word, GridPosition pos, char[,] grid)
         {
             for (int counter = 0; counter < word.Length; counter++)
             {
                 grid[pos.Row, pos.Col - counter] = word[counter];
             }
         } // place word right -> left
-        private void PlaceWordDown(string word, GridPosition2D pos, char[,] grid)
+        private void PlaceWordDown(string word, GridPosition pos, char[,] grid)
         {
             for (int counter = 0; counter < word.Length; counter++)
             {
                 grid[pos.Row + counter, pos.Col] = word[counter];
             }
         } // place word up -> down
-        private void PlaceWordUp(string word, GridPosition2D pos, char[,] grid)
+        private void PlaceWordUp(string word, GridPosition pos, char[,] grid)
         {
             for (int counter = 0; counter < word.Length; counter++)
             {
                 grid[pos.Row - counter, pos.Col] = word[counter];
             }
         } // place word down -> up
-        private void PlaceWordUpRight(string word, GridPosition2D pos, char[,] grid)
+        private void PlaceWordUpRight(string word, GridPosition pos, char[,] grid)
         {
             for (int counter = 0; counter < word.Length; counter++)
             {
                 grid[pos.Row - counter, pos.Col + counter] = word[counter];
             }
         } // place word diagonal left -> up right
-        private void PlaceWordDownRight(string word, GridPosition2D pos, char[,] grid)
+        private void PlaceWordDownRight(string word, GridPosition pos, char[,] grid)
         {
             for (int counter = 0; counter < word.Length; counter++)
             {
                 grid[pos.Row + counter, pos.Col + counter] = word[counter];
             }
         } // place word diagonal left -> down right
-        private void PlaceWordUpLeft(string word, GridPosition2D pos, char[,] grid)
+        private void PlaceWordUpLeft(string word, GridPosition pos, char[,] grid)
         {
             for (int counter = 0; counter < word.Length; counter++)
             {
                 grid[pos.Row - counter, pos.Col - counter] = word[counter];
             }
         } // place word diagonal left -> up left
-        private void PlaceWordDownLeft(string word, GridPosition2D pos, char[,] grid)
+        private void PlaceWordDownLeft(string word, GridPosition pos, char[,] grid)
         {
             for (int counter = 0; counter < word.Length; counter++)
             {

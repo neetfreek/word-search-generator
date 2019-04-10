@@ -1,22 +1,35 @@
-﻿using System;
+﻿/*==============================================================*
+*  Manage get user input, print output to user through console  *
+*===============================================================*
+*  1. Print messages to user:                                   *
+*   a. Greeting message                                         *
+*   b. Prompt user to select play or quit on first play         *
+*   c. Prompt user to select word list size                     *
+*   d. Prompt user to select word list category                 *
+*   e. Prompt user to select play or quit after first play      *
+*   f. Information about NeetFreek                              *
+*  2. Print names of category lists for user to choose from     *
+*  3. Print game elements:                                      *
+*   a. List of Words for user to find                           *
+*   b. Game Grid comprised of Words' and random characters      *
+*  4. Get user input                                            *
+*  5. Change characters' colours (foreground colours)           *
+*===============================================================*/
+using System;
 using WordSearch.Common;
-
-/*======================================================*
-*  Handle user-facing (front-end) console functionality *
-*=======================================================*/
 
 namespace WordSearch
 {
     public static class FrontEnd
     {
-        /*==================================================*
-        *  Print messages to user in UI (console) front-end *
-        *===================================================*/
+        /*==================*
+        * 1. Print messages *
+        *===================*/
         public static void MessageGreet()
         {
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine($"Welcome to Word Search! Find words from differnet category lists.{Environment.NewLine}" +
-                $"Each time you play the game the grid is re-shuffled.");
+            Console.WriteLine($"Welcome to Word Search! Find Words from differnet category lists.{Environment.NewLine}" +
+                $"Each time you play the game the Grid is re-shuffled.");
         }
         public static void MessagePromptStart()
         {
@@ -27,7 +40,7 @@ namespace WordSearch
             CharColourRed('Q');
             Console.Write($" to Quit.{Environment.NewLine}");
         }
-        public static void MessageListSize()
+        public static void MessagePromptListSize()
         {
             Console.WriteLine($"{Environment.NewLine}Select a list size:{Environment.NewLine}");
             CharColourGreen('S');
@@ -38,7 +51,7 @@ namespace WordSearch
             Console.Write("arge.");
             Console.WriteLine();
         }
-        public static void MessageListSelect()
+        public static void MessagePromptListSelect()
         {
             Console.WriteLine($"{Environment.NewLine}Select a list:{Environment.NewLine}");
             PrintListOfLists(DataHandler.AllLists());
@@ -53,7 +66,7 @@ namespace WordSearch
             CharColourRed('Q');
             Console.Write($" to Quit.{Environment.NewLine}");
         }
-        public static void MessageEnd()
+        public static void MessageNFInfo()
         {
             Console.WriteLine($"{Environment.NewLine}Made by NeetFreek {Environment.NewLine}" +
                 $"2019{Environment.NewLine}" +
@@ -62,40 +75,50 @@ namespace WordSearch
         }
 
         /*==================================*
-        *  Return user input to Program.cs  *
+        *  2. Print list of word categories *
         *===================================*/
-        public static char ReadUserInput()
+        private static void PrintListOfLists(string[] array)
         {
-            char input = Console.ReadKey().KeyChar;
-            input = char.ToLower(input);
-            Console.Write("\b \b");
+            int length = array.Length;
 
-            return input;
+            for (int counter = 0; counter < length; counter++)
+            {
+                // Print first letter of list name in dark green
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                foreach (char character in array[counter])
+                {
+                    // print rest of list name in white
+                    Console.Write($"{character}");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                // Print space between list names
+                Console.Write($" ");
+            }
         }
 
-        /*==============================*
-        *  Print words to find, grid    *
-        *===============================*/
-        public static void HandlePrintInGame(string[] words, char[,] grid)
+        /*==========================*
+        *  3. Print game elements:  *
+        *===========================*/
+        public static void HandlePrintGame(string[] words, char[,] grid)
         {
             Console.WriteLine($"{Environment.NewLine}=== WORDS ==={Environment.NewLine}");
-            PrintWordsToFind(words);
+            PrintGameWordsList(words);
             Console.WriteLine();
 
             Console.WriteLine($"{Environment.NewLine}=== WORD SEARCH ==={Environment.NewLine}");
-            PrintGrid(grid);
+            PrintGameGrid(grid);
         }
-        private static void PrintWordsToFind(string[] vectorToPrint)
+        private static void PrintGameWordsList(string[] array)
         {
             int counterNewLine = 0;
-            int length = vectorToPrint.Length;
+            int length = array.Length;
 
             for (int counter = 0; counter < length; counter++)
             {
                 // Print each word to find seperated by space
-                Console.Write($"{vectorToPrint[counter]} ");
+                Console.Write($"{array[counter]} ");
 
-                // new line every six words
+                // new line every six Words
                 if (counter == 0)
                 {
                     counterNewLine = 1;
@@ -111,7 +134,7 @@ namespace WordSearch
             }
 
         }
-        private static void PrintGrid(char[,] matrixToPrint)
+        private static void PrintGameGrid(char[,] matrixToPrint)
         {
             int numRows = matrixToPrint.GetLength(0);
             int numCols = matrixToPrint.GetLength(1);
@@ -120,7 +143,7 @@ namespace WordSearch
             {
                 for (int counterCols = 0; counterCols < numCols; counterCols++)
                 {
-                    // print grid element
+                    // print Grid element
                     Console.Write($"{matrixToPrint[counterRows, counterCols]}".PadLeft(2));
                 }
                 // move to next line to print next row
@@ -128,31 +151,21 @@ namespace WordSearch
             }
         }
 
-        /*==================================================*
-        *  Print names of category lists for user to choose *
-        *===================================================*/
-        private static void PrintListOfLists(string[] vectorToPrint)
+        /*======================*
+        *  4. Get user input    *
+        *=======================*/
+        public static char ReadUserInput()
         {
-            int length = vectorToPrint.Length;
+            char input = Console.ReadKey().KeyChar;
+            input = char.ToLower(input);
+            Console.Write("\b \b");
 
-            for (int counter = 0; counter < length; counter++)
-            {
-                // Print first letter of list name in dark green
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-                foreach (char character in vectorToPrint[counter])
-                {
-                    // print rest of list name in white
-                    Console.Write($"{character}");
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                // Print space between list names
-                Console.Write($" ");
-            }
+            return input;
         }
 
-        /*==================================================================*
-        *  Change forground colour, print character, reset colour to white  *
-        *===================================================================*/
+        /*==================================*
+        *  5. Change characters' colours    *
+        *===================================*/
         private static void CharColourGreen(char character)
         {
             Console.ForegroundColor = ConsoleColor.DarkGreen;

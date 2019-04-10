@@ -19,7 +19,7 @@ Find and execute the `WordSearch.exe` executable file in `WordSearch/bin/Debug` 
 
 
 **TODO:**
-- Clean up code in `WordSearch.cs`
+- <strike>Clean up code in `WordSearch.cs`</strike>
 - <strike>Move all console functionality from /Common to FrontEnd.cs</strike>
 - <strike>Add functionality for diagonal words</strike>
 - <strike>Add functionality for taking words from external data files</strike>

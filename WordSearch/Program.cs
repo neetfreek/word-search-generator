@@ -1,39 +1,46 @@
-﻿using System;
-
-/*==========================================================*
-*  Word Search startup project, entry point                 *
-*  Handles setting up game by:                              *
-*  1. Calling DataHandler.cs to get word list               *
-*  2. Calling FrontEnd.cs handle user input, display output *
-*  3. Calling WordSearch.cs to generate grid                *
-*===========================================================*/
+﻿/*======================================================================================*
+*  Word Search startup project. Controls program flow.  | <(^^ )><(^ ^)><( ^^)> NF 2019 *
+*  =====================================================================================*
+*  1. Contains Main() entry program entry point:                                        *
+*   a. Call to display first game message                                               *
+*   b. Start game                                                                       *
+*  3. ROUTINE: Handle game control flow:                                                *
+*   a. Read input to start, quit game                                                   *
+*   b. Handle setting up game:                                                          *
+*       i. Get word list size from user                                                 *
+*       ii. Get word list category from player                                          *
+*       iii. Setup game by instantiate, call, wordSearch object to set up Grid, Words   *  
+*       iv.  Call GameLoop() to read player input in-game to play again, quit           *
+*  4. Handle in-game user input to play again, quit                                     *
+*  MISC: Call FrontEnd to get user input, print output to user through console          *
+*=======================================================================================*/
+using System;
 
 namespace WordSearch
 {
     class Program
     {
-        // set true in GameLoop, skips HandleNewGame while loop on game restart
-       static bool inGame = false;
+        // set true in GameLoop, skips ReadStartQuitGame while loop when restarting
+       private static bool inGame = false;
 
-        /*======================*
-        *  Program entry point  *
-        *=======================*/
-        static void Main(string[] args)
+        /*=========================*
+        *  1. Program entry point  *
+        *==========================*/
+        private static void Main(string[] args)
         {
-            StartScreen();
+            FirstGameMessage();
+            ReadStartQuitGame();
         }
-
-        /*==================================*
-        *  Game setup and setup user input  *
-        *===================================*/
-        private static void StartScreen()
+        private static void FirstGameMessage()
         {
             FrontEnd.MessageGreet();
             FrontEnd.MessagePromptStart();
-            HandleNewGame();
         }
-
-        private static void HandleNewGame()
+        
+        /*==============================*
+        *  3. Handle game control flow  *
+        *===============================*/
+        private static void ReadStartQuitGame()
         {
             bool setup = true;
             while (setup && !inGame)
@@ -53,9 +60,9 @@ namespace WordSearch
         }
         private static void HandleSetupGame()
         {
-            FrontEnd.MessageListSize();
+            FrontEnd.MessagePromptListSize();
             int listSize = HandleGetSizeSelection();
-            FrontEnd.MessageListSelect();
+            FrontEnd.MessagePromptListSelect();
             string listSelected = HandleGetListSelection();
             SetupGame(listSize, listSelected);
             FrontEnd.MessagePromptRestart();
@@ -106,14 +113,15 @@ namespace WordSearch
         private static void SetupGame(int sizeList, string nameList)
         {
             WordSearch wordSearch = new WordSearch();
-            wordSearch.SetupWordSearch(nameList, sizeList);
+            wordSearch.HandleSetupWords(nameList, sizeList);
+            wordSearch.HandleSetupGrid();
 
-            FrontEnd.HandlePrintInGame(wordSearch.words, wordSearch.grid);
-            FrontEnd.MessageEnd();
+            FrontEnd.HandlePrintGame(wordSearch.Words, wordSearch.Grid);
+            FrontEnd.MessageNFInfo();
         }
 
         /*======================*
-        * In-game user input    *
+        * 4. In-game user input *
         *=======================*/
         private static void GameLoop()
         {
@@ -124,7 +132,7 @@ namespace WordSearch
                 switch (input)
                 {
                     case 'p':
-                        StartScreen();
+                        ReadStartQuitGame();
                         break;
                     case 'q':
                         Environment.Exit(0);

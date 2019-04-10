@@ -61,7 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\Coordinate2D.cs" />
+    <Compile Include="Common\GridPosition.cs" />
     <Compile Include="Common\Helper.cs" />
     <Compile Include="Common\DataHandler.cs" />
     <Compile Include="FrontEnd.cs" />
