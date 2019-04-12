@@ -1,6 +1,6 @@
 # Word Search Generator
 This project is for generating word search grids via an interactive console application. It presents the user with a number of random words from the selected list based on selected game size. 
-I plan on building a small front-end for this project, maybe with Unity. For now, it's console time!
+I'm building a small front-end for this project with MonoGame.
 
 
 ## The Game
